@@ -11,51 +11,9 @@
 
   <!-- Tailwind Play CDN: generates classes in the browser, including ones JS adds later -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            paper: '#E9EEF3',
-            'paper-2': '#F4F7FA',
-            grid: '#CBD8E4',
-            ink: '#132039',
-            'ink-soft': '#5A6B84',
-            dim: '#A8B8C9',
-            teal: '#0C7C66',
-            marigold: '#D98A0B',
-            ultra: '#3341C4',
-            crimson: '#C63A55',
-          },
-          fontFamily: {
-            display: ['"Bricolage Grotesque"', 'sans-serif'],
-            sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
-            mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
-          },
-        },
-      },
-    };
-  </script>
+  <script src="theme.js"></script>
 
-  <style>
-    :root {
-      --paper: #E9EEF3; --paper-2: #F4F7FA; --grid: #CBD8E4;
-      --ink: #132039; --ink-soft: #5A6B84; --dim: #A8B8C9;
-    }
-    * { border-radius: 0 !important; }
-    .graph-paper {
-      background-color: var(--paper-2);
-      background-image:
-        linear-gradient(var(--grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-      background-size: 26px 26px;
-    }
-    .cell { transition: background-color .18s ease; }
-    input[type=range] { accent-color: var(--ink); }
-    @media (prefers-reduced-motion: reduce) {
-      .cell, button { transition: none !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="base.css">
 </head>
 
 <body class="bg-paper text-ink font-sans antialiased">
@@ -63,7 +21,7 @@
 
     <!-- Header -->
     <header class="border-b-2 border-ink pb-4">
-      <p class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Web Tech mini project · Breadth-first search</p>
+      <p class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Web Tech mini project · Breadth-first search · <a href="cron.html" class="underline decoration-grid underline-offset-2 hover:text-ink">Cron explainer ›</a></p>
       <div class="mt-2 flex flex-wrap items-end justify-between gap-3">
         <h1 class="font-display font-extrabold leading-[.94] tracking-[-.035em] text-[clamp(30px,5.6vw,52px)]">Shortest path finder</h1>
         <p id="status" class="font-mono text-[11px] text-ink-soft">—</p>
