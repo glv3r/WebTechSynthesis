@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Football · The Final Whistle</title>
+  <meta name="description" content="Football scores and headlines: Premier League, La Liga and Champions League.">
+
+  <!-- Fonts: Space Grotesk for headlines, DM Sans for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (Play CDN) + our Gumroad colours and fonts -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="base.css">
+</head>
+
+<!-- data-sport tells js/page.js which section this page is -->
+<body data-sport="football" class="bg-cream font-sans text-ink antialiased">
+
+  <!-- Masthead and section nav -->
+  <header class="mx-auto max-w-6xl px-4">
+    <div id="masthead"></div>
+    <nav id="nav" aria-label="Sections"></nav>
+  </header>
+
+  <!-- Yellow scores ticker -->
+  <div id="ticker"></div>
+
+  <main class="mx-auto max-w-6xl px-4 py-6">
+    <!-- League tabs (only on sports with more than one league) -->
+    <div id="tabs" class="mb-5 empty:hidden"></div>
+
+    <!-- Top of the page: lead story (left) and scores of the day (right) -->
+    <div class="grid gap-6 lg:grid-cols-12">
+      <section id="lead" class="lg:col-span-8" aria-label="Lead story"></section>
+      <aside class="lg:col-span-4 lg:border-l lg:border-ink lg:pl-6" aria-label="Scores of the day">
+        <div id="rail-head"></div>
+        <div id="rail" class="space-y-3"></div>
+      </aside>
+    </div>
+
+    <!-- Bottom of the page: more stories -->
+    <section class="mt-10">
+      <div id="grid-head"></div>
+      <div id="grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="mx-auto max-w-6xl px-4"></footer>
+
+  <!-- Scripts: sample data → feeds → UI pieces → page logic (order matters) -->
+  <script src="js/sample.js"></script>
+  <script src="js/feeds.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/page.js"></script>
+</body>
+</html>

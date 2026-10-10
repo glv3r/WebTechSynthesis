@@ -1,19 +1,41 @@
-/* Shared styles Tailwind utilities don't cover */
-:root {
-  --paper: #E9EEF3; --paper-2: #F4F7FA; --grid: #CBD8E4;
-  --ink: #132039; --ink-soft: #5A6B84; --dim: #A8B8C9;
+/* =====================================================================
+   base.css: the few styles Tailwind utilities don't cover neatly
+   ===================================================================== */
+
+/* Gumroad's signature hover: the card lifts up-left and a hard shadow appears */
+.lift {
+  transition: transform .15s ease, box-shadow .15s ease;
 }
-* { border-radius: 0 !important; }
-.graph-paper {
-  background-color: var(--paper-2);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 26px 26px;
+.lift:hover,
+.lift:focus-visible {
+  transform: translate(-4px, -4px);
+  box-shadow: 4px 4px 0 0 #000;
 }
-.cell { transition: background-color .18s ease; }
-.slide { transition: transform .3s cubic-bezier(.4, 0, .2, 1); }
-input[type=range] { accent-color: var(--ink); }
+
+/* Scores ticker: scrolls sideways without showing a scrollbar */
+.ticker {
+  scrollbar-width: none;
+}
+.ticker::-webkit-scrollbar {
+  display: none;
+}
+
+/* Newspaper-style double rule under the masthead */
+.double-rule {
+  border-bottom: 6px double #000;
+}
+
+/* Loading placeholder that gently pulses */
+.skeleton {
+  animation: pulse 1.2s ease-in-out infinite;
+  background: #e6e6df;
+}
+@keyframes pulse {
+  50% { opacity: .5; }
+}
+
+/* Respect people who turn off animations */
 @media (prefers-reduced-motion: reduce) {
-  .cell, .slide, button { transition: none !important; }
+  .lift, .skeleton { transition: none; animation: none; }
+  .lift:hover { transform: none; }
 }
