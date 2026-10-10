@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shortest Path Finder</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind Play CDN: generates classes in the browser, including ones JS adds later -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#E9EEF3',
+            'paper-2': '#F4F7FA',
+            grid: '#CBD8E4',
+            ink: '#132039',
+            'ink-soft': '#5A6B84',
+            dim: '#A8B8C9',
+            teal: '#0C7C66',
+            marigold: '#D98A0B',
+            ultra: '#3341C4',
+            crimson: '#C63A55',
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', 'sans-serif'],
+            sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root {
+      --paper: #E9EEF3; --paper-2: #F4F7FA; --grid: #CBD8E4;
+      --ink: #132039; --ink-soft: #5A6B84; --dim: #A8B8C9;
+    }
+    * { border-radius: 0 !important; }
+    .graph-paper {
+      background-color: var(--paper-2);
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+    .cell { transition: background-color .18s ease; }
+    input[type=range] { accent-color: var(--ink); }
+    @media (prefers-reduced-motion: reduce) {
+      .cell, button { transition: none !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-paper text-ink font-sans antialiased">
+  <div class="mx-auto max-w-[1020px] px-4 py-8">
+
+    <!-- Header -->
+    <header class="border-b-2 border-ink pb-4">
+      <p class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Web Tech mini project · Breadth-first search</p>
+      <div class="mt-2 flex flex-wrap items-end justify-between gap-3">
+        <h1 class="font-display font-extrabold leading-[.94] tracking-[-.035em] text-[clamp(30px,5.6vw,52px)]">Shortest path finder</h1>
+        <p id="status" class="font-mono text-[11px] text-ink-soft">—</p>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <main class="mt-6 grid grid-cols-1 gap-5 min-[840px]:grid-cols-[1fr_268px]">
+
+      <!-- Main column -->
+      <section class="min-w-0 space-y-4">
+
+        <!-- Controls -->
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-find" class="btn border border-ink bg-ink px-3 py-1.5 font-mono text-[11px] uppercase tracking-[.08em] text-paper-2 hover:bg-transparent hover:text-ink">Find path</button>
+          <button id="btn-play" class="btn border border-ink px-3 py-1.5 font-mono text-[11px] uppercase tracking-[.08em] hover:bg-ink hover:text-paper-2">▶ Play</button>
+          <button id="btn-back" class="btn border border-ink px-3 py-1.5 font-mono text-[11px] uppercase tracking-[.08em] hover:bg-ink hover:text-paper-2" aria-label="Step back">◂ Back</button>
+          <button id="btn-next" class="btn border border-ink px-3 py-1.5 font-mono text-[11px] uppercase tracking-[.08em] hover:bg-ink hover:text-paper-2" aria-label="Step forward">Next ›</button>
+          <span class="w-px bg-grid"></span>
+          <button id="btn-random" class="btn border border-ink px-3 py-1.5 font-mono text-[11px] uppercase tracking-[.08em] hover:bg-ink hover:text-paper-2">Random walls</button>
+          <button id="btn-clear" class="btn border border-ink px-3 py-1.5 font-mono text-[11px] uppercase tracking-[.08em] hover:bg-ink hover:text-paper-2">Clear walls</button>
+        </div>
+
+        <!-- Stage -->
+        <div class="graph-paper border border-ink p-3 sm:p-4">
+          <div id="grid" class="grid gap-px border border-ink bg-grid touch-none select-none"></div>
+        </div>
+
+        <!-- Scrubber + speed -->
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px]">
+          <label class="block">
+            <span class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Timeline</span>
+            <input id="scrub" type="range" min="0" max="0" value="0" class="mt-1 block w-full" disabled>
+          </label>
+          <label class="block">
+            <span class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Speed</span>
+            <input id="speed" type="range" min="1" max="10" value="7" class="mt-1 block w-full">
+          </label>
+        </div>
+
+        <!-- Narration -->
+        <p id="narration" class="border-l-[3px] border-ink pl-3 text-[15px] leading-relaxed min-h-[3.2em]"></p>
+
+        <p class="font-mono text-[11px] text-ink-soft">
+          Keys: Enter find path · Space play/pause · ← → step · W random walls · C clear walls · drag S or E to move them
+        </p>
+      </section>
+
+      <!-- Sidebar -->
+      <aside class="space-y-4">
+        <div class="border border-ink bg-paper-2 p-4">
+          <p class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Readout</p>
+          <dl id="stats" class="mt-2 font-mono text-[12px]"></dl>
+        </div>
+
+        <div class="border border-ink bg-paper-2 p-4">
+          <p class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Legend</p>
+          <ul class="mt-2 space-y-1.5 font-mono text-[11px]">
+            <li class="flex items-center gap-2"><span class="h-[11px] w-[11px] border border-ink bg-marigold"></span>Frontier: the queue</li>
+            <li class="flex items-center gap-2"><span class="h-[11px] w-[11px] border border-ink bg-crimson"></span>Being expanded now</li>
+            <li class="flex items-center gap-2"><span class="h-[11px] w-[11px] border border-ink bg-teal/20"></span>Settled: distance known</li>
+            <li class="flex items-center gap-2"><span class="h-[11px] w-[11px] border border-ink bg-ultra"></span>Shortest path</li>
+            <li class="flex items-center gap-2"><span class="h-[11px] w-[11px] border border-ink bg-ink"></span>Wall</li>
+          </ul>
+        </div>
+
+        <div class="border border-ink bg-paper-2 p-4">
+          <p class="font-mono text-[10px] uppercase tracking-[.16em] text-ink-soft">Algorithm</p>
+          <ol id="code" class="mt-2 font-mono text-[11.5px] leading-[1.7]"></ol>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Closing note -->
+    <footer class="mt-8 max-w-[64ch] border-t border-grid pt-4 text-[13px] leading-relaxed text-ink-soft">
+      Each open cell joins the queue at most once and checks four neighbours, so a full search costs O(V + E).
+      It finds the shortest path because the queue only ever holds cells at two neighbouring distances, d and d + 1.
+      As a result, the first time E comes off the queue, nothing closer is left to try.
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
